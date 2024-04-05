@@ -7,6 +7,6 @@ spring:
   profiles:
     active: dev
   datasource:
-    url: jdbc:shardingsphere:classpath:sharding.yaml
+    url: jdbc:shardingsphere:classpath:sharding-cluster.yaml
     driver-class-name: org.apache.shardingsphere.driver.ShardingSphereDriver
 

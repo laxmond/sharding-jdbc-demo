@@ -9,22 +9,22 @@ mode:
 
 
 dataSources:
-  master:
+  ds0-master:
     dataSourceClassName: com.zaxxer.hikari.HikariDataSource
     driverClassName: com.mysql.jdbc.Driver
-    jdbcUrl: jdbc:mysql://121.4.218.41:3307/db_user
+    jdbcUrl: jdbc:mysql://121.4.218.41:3307/db_user?allowPublicKeyRetrieval=true
     username: root
     password: root123456
-  slave1:
+  ds0-slave1:
     dataSourceClassName: com.zaxxer.hikari.HikariDataSource
     driverClassName: com.mysql.jdbc.Driver
-    jdbcUrl: jdbc:mysql://121.4.218.41:3308/db_user
+    jdbcUrl: jdbc:mysql://121.4.218.41:3308/db_user?allowPublicKeyRetrieval=true
     username: root
     password: root123456
-  slave2:
+  ds0-slave2:
     dataSourceClassName: com.zaxxer.hikari.HikariDataSource
     driverClassName: com.mysql.jdbc.Driver
-    jdbcUrl: jdbc:mysql://121.4.218.41:3309/db_user
+    jdbcUrl: jdbc:mysql://121.4.218.41:3309/db_user?allowPublicKeyRetrieval=true
     username: root
     password: root123456
 
@@ -37,10 +37,10 @@ rules:
   - !READWRITE_SPLITTING
     dataSources:
       readwrite_ds:
-        writeDataSourceName: master
+        writeDataSourceName: ds0-master
         readDataSourceNames:
-          - slave1
-          - slave2
+          - ds0-slave1
+          - ds0-slave2
         transactionalReadQueryStrategy: PRIMARY
         loadBalancerName: round_robin
     loadBalancers:
@@ -53,7 +53,7 @@ rules:
 #      - master.* # 加载指定单表
 #      - ds_1.* # 加载指定数据源中的全部单表
       - "*.*" # 加载全部单表
-    defaultDataSource: master # 默认数据源，仅在执行 CREATE TABLE 创建单表时有效。缺失值为空，表示随机单播路由。
+    defaultDataSource: ds0-master # 默认数据源，仅在执行 CREATE TABLE 创建单表时有效。缺失值为空，表示随机单播路由。
 
 
 
