@@ -53,7 +53,7 @@ rules:
 #      - master.* # 加载指定单表
 #      - ds_1.* # 加载指定数据源中的全部单表
       - "*.*" # 加载全部单表
-    defaultDataSource: ds0-master # 默认数据源，仅在执行 CREATE TABLE 创建单表时有效。缺失值为空，表示随机单播路由。
+#    defaultDataSource: ds0-master # 默认数据源，仅在执行 CREATE TABLE 创建单表时有效。缺失值为空，表示随机单播路由。
 
 
 

@@ -35,4 +35,15 @@ public class ClusterTest {
             orderMapper.insert(order);
         }
     }
+
+    @Test
+    public void testSelect() {
+//        Order order = new Order();
+//        order.setUserId(i % 2);
+
+        orderMapper.selectList(null);
+        orderMapper.selectList(null);
+        orderMapper.selectList(null);
+
+    }
 }

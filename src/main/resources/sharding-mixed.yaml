@@ -1,0 +1,97 @@
+# JDBC 逻辑库名称。在集群模式中，使用该参数来联通 ShardingSphere-JDBC 与 ShardingSphere-Proxy。
+# 默认值：logic_db
+#databaseName (?):
+
+mode:
+  type: Standalone
+  repository:
+    type: JDBC
+
+
+dataSources:
+  ds0-master:
+    dataSourceClassName: com.zaxxer.hikari.HikariDataSource
+    driverClassName: com.mysql.jdbc.Driver
+    jdbcUrl: jdbc:mysql://121.4.218.41:3307/db_order?allowPublicKeyRetrieval=true
+    username: root
+    password: root123456
+  ds0-slave1:
+    dataSourceClassName: com.zaxxer.hikari.HikariDataSource
+    driverClassName: com.mysql.jdbc.Driver
+    jdbcUrl: jdbc:mysql://121.4.218.41:3308/db_order?allowPublicKeyRetrieval=true
+    username: root
+    password: root123456
+  ds0-slave2:
+    dataSourceClassName: com.zaxxer.hikari.HikariDataSource
+    driverClassName: com.mysql.jdbc.Driver
+    jdbcUrl: jdbc:mysql://121.4.218.41:3309/db_order?allowPublicKeyRetrieval=true
+    username: root
+    password: root123456
+  # 配置其他数据源
+
+
+
+
+rules:
+  - !READWRITE_SPLITTING
+    dataSources:
+      readwrite_ds:
+        writeDataSourceName: ds0-master
+        readDataSourceNames:
+          - ds0-slave1
+          - ds0-slave2
+        transactionalReadQueryStrategy: PRIMARY
+        loadBalancerName: round_robin
+    loadBalancers:
+      round_robin:
+        type: ROUND_ROBIN
+
+  - !SINGLE
+    tables:
+      - "*.*" # 加载全部单表
+    defaultDataSource: readwrite_ds # 默认数据源，仅在执行 CREATE TABLE 创建单表时有效。缺失值为空，表示随机单播路由。
+
+  - !SHARDING
+    tables:
+      t_order:
+        #        actualDataNodes: ds_0.t_order_0
+        actualDataNodes: readwrite_ds.t_order_${0..1}
+        tableStrategy:
+          standard:
+            shardingColumn: id
+            shardingAlgorithmName: t_order_inline
+    #        keyGenerateStrategy:
+    #          column: id
+    #          keyGeneratorName: snowflake
+    #        auditStrategy:
+    #          auditorNames:
+    #            - sharding_key_required_auditor
+    #          allowHintDisable: true
+    #
+    #    defaultShardingColumn: id
+    #    bindingTables:
+    #      - t_order
+#    defaultDatabaseStrategy:
+#      standard:
+#        shardingColumn: user_id
+#        shardingAlgorithmName: database_inline
+    #    defaultTableStrategy:
+    #      none:
+    #
+    shardingAlgorithms:
+#      database_inline:
+#        type: INLINE
+#        props:
+#          algorithm-expression: ds_${user_id % 2}
+      t_order_inline:
+        type: INLINE
+        props:
+          algorithm-expression: t_order_${id % 2}
+
+#    keyGenerators:
+#      snowflake:
+#        type: SNOWFLAKE
+
+
+props:
+  sql-show: true
